@@ -1,0 +1,11 @@
+/*
+ * Copyright (c) 2022 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+&i2c1 {
+    status = "okay";
+    ssd1306@3c {
+        display-offset = <2>;
+    };
+};

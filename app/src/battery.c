@@ -23,8 +23,11 @@ LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 #include <zmk/workqueue.h>
 
 static uint8_t last_state_of_charge = 0;
+static int16_t bat_mv = 0;
 
 uint8_t zmk_battery_state_of_charge(void) { return last_state_of_charge; }
+int16_t zmk_battery_get_mv(void) {return bat_mv; }
+
 
 #if DT_HAS_CHOSEN(zmk_battery)
 static const struct device *const battery = DEVICE_DT_GET(DT_CHOSEN(zmk_battery));
@@ -95,7 +98,8 @@ static int zmk_battery_update(const struct device *battery) {
         last_state_of_charge = state_of_charge.val1;
 
         rc = raise_zmk_battery_state_changed(
-            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge});
+            (struct zmk_battery_state_changed){.state_of_charge = last_state_of_charge,
+                                               .bat_mv = bat_mv});
 
         if (rc != 0) {
             LOG_ERR("Failed to raise battery state changed event: %d", rc);
